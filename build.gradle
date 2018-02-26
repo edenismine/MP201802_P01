@@ -1,0 +1,36 @@
+group 'mx.unam.fciencias.myp'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'application'
+
+mainClassName = 'mx.unam.fciencias.myp.Demo'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.intellij:annotations:+@jar'
+}
+
+javadoc{
+    options.memberLevel = JavadocMemberLevel.PRIVATE
+}
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.files.collect {
+                    it.getName()
+                }.join(' '),
+                'Main-Class': mainClassName
+        )
+    }
+}
+
+task copyToLibs(type: Copy) {
+    from configurations.compile
+    into "$buildDir/libs"
+}
+
+jar.dependsOn copyToLibs
